@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Merry Christmas 2025</title>
+<style>
+    body {
+        margin: 0;
+        background: #000;
+        overflow: hidden;
+        font-family: monospace;
+        color: #fff;
+        text-align: center;
+    }
+    #tree {
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 18px;
+        white-space: pre;
+    }
+    .star { color: gold; text-shadow: 0 0 10px gold; }
+    .leaf { color: #00ff6a; }
+    .light {
+        animation: blink 1s infinite;
+    }
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.4; }
+    }
+    #msg {
+        position: absolute;
+        bottom: 5%;
+        width: 100%;
+        font-size: 32px;
+        color: #6ad0ff;
+        animation: glow 2s infinite;
+    }
+    @keyframes glow {
+        0%, 100% { text-shadow: 0 0 10px #6ad0ff; }
+        50% { text-shadow: 0 0 20px #6ad0ff; }
+    }
+</style>
+</head>
+<body>
+
+<canvas id="snow"></canvas>
+
+<div id="tree">
+<span class="star light">★</span>
+<br>
+<span class="leaf">      ▲ ▲</span><br>
+<span class="leaf light">     ▲ ● ▲</span><br>
+<span class="leaf">    ▲ ▲ ▲ ▲</span><br>
+<span class="leaf light">   ▲ ● ▲ ● ▲</span><br>
+<span class="leaf">  ▲ ▲ ▲ ▲ ▲ ▲</span><br>
+<span class="leaf light"> ▲ ● ▲ ● ▲ ● ▲</span><br>
+<span class="leaf">▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲</span><br>
+<span style="color:#8b4513;">       ││</span><br>
+<span style="color:#8b4513;">       ││</span>
+</div>
+
+<div id="msg">Merry Christmas 2025!</div>
+
+<script>
+// Snow effect
+const canvas = document.getElementById('snow');
+const ctx = canvas.getContext('2d');
+let w, h;
+
+function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+}
+resize();
+window.onresize = resize;
+
+let snowflakes = [];
+for (let i = 0; i < 150; i++) {
+    snowflakes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 3 + 1,
+        d: Math.random() + 0.5
+    });
+}
+
+function drawSnow() {
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    for (let flake of snowflakes) {
+        ctx.moveTo(flake.x, flake.y);
+        ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+    }
+    ctx.fill();
+    updateSnow();
+}
+
+function updateSnow() {
+    for (let flake of snowflakes) {
+        flake.y += flake.d;
+        if (flake.y > h) {
+            flake.y = -10;
+            flake.x = Math.random() * w;
+        }
+    }
+}
+
+setInterval(drawSnow, 33);
+</script>
+
+</body>
+</html>
