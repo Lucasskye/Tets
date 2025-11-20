@@ -1,115 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Merry Christmas 2025</title>
 <style>
-    body {
-        margin: 0;
-        background: #000;
-        overflow: hidden;
-        font-family: monospace;
-        color: #fff;
-        text-align: center;
-    }
-    #tree {
-        position: absolute;
-        top: 10%;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 18px;
-        white-space: pre;
-    }
-    .star { color: gold; text-shadow: 0 0 10px gold; }
-    .leaf { color: #00ff6a; }
-    .light {
-        animation: blink 1s infinite;
-    }
-    @keyframes blink {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.4; }
-    }
-    #msg {
-        position: absolute;
-        bottom: 5%;
-        width: 100%;
-        font-size: 32px;
-        color: #6ad0ff;
-        animation: glow 2s infinite;
-    }
-    @keyframes glow {
-        0%, 100% { text-shadow: 0 0 10px #6ad0ff; }
-        50% { text-shadow: 0 0 20px #6ad0ff; }
-    }
+  :root{
+    --bg1:#071428;
+    --bg2:#000507;
+    --tree-glow: 0 0 14px rgba(0,255,102,0.15);
+  }
+  html,body{height:100%;margin:0;}
+  body{
+    background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 70%);
+    font-family: "Courier New", monospace;
+    color:#fff;
+    overflow:hidden;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding-top:36px;
+  }
+
+  /* Title */
+  h1{
+    position:fixed;
+    top:18px;
+    left:50%;
+    transform:translateX(-50%);
+    margin:0;
+    font-size:28px;
+    letter-spacing:1px;
+    color:#bfeeff;
+    text-shadow:0 0 8px #6ae2ff;
+  }
+
+  /* container for tree svg */
+  #treeWrap{
+    width:360px;
+    max-width:90vw;
+    height:520px;
+    position:relative;
+    display:block;
+  }
+
+  /* star */
+  .star{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    top:2px;
+    width:46px;
+    height:46px;
+    filter:drop-shadow(0 0 8px rgba(255,215,0,0.8));
+    animation: starPulse 2s infinite ease-in-out;
+    z-index:10;
+  }
+  @keyframes starPulse{
+    0%{transform:translateX(-50%) scale(1); opacity:1;}
+    50%{transform:translateX(-50%) scale(1.2); opacity:0.6;}
+    100%{transform:translateX(-50%) scale(1); opacity:1;}
+  }
+
+  /* Each curved layer */
+  .layer{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:0;
+    height:0;
+    pointer-events:none;
+    opacity:0;
+    filter: drop-shadow(0 0 6px rgba(0,255,102,0.08));
+  }
+
+  /* curve look using border trick and rounded corners */
+  .curveShape{
+    margin:0 auto;
+    border-left: 200px solid transparent;
+    border-right: 200px solid transparent;
+    border-bottom: 40px solid rgba(0,200,80,0.12);
+    border-radius: 50%;
+    transform-origin:center top;
+    filter: blur(0.6px);
+  }
+
+  /* appear animation per layer (we will stagger using inline style) */
+  @keyframes appear {
+    from{ opacity:0; transform: translateY(-18px) scale(0.98); filter: blur(3px); }
+    to  { opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
+  }
+
+  /* lights */
+  .light{
+    position:absolute;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    box-shadow:0 0 8px rgba(255,255,255,0.08);
+    transform:translate(-50%,-50%) scale(1);
+    animation: blink 1.6s infinite ease-in-out;
+  }
+  @keyframes blink {
+    0%{opacity:0.25; transform:translate(-50%,-50%) scale(0.9);}
+    45%{opacity:1; transform:translate(-50%,-50%) scale(1.25);}
+    100%{opacity:0.4; transform:translate(-50%,-50%) scale(1);}
+  }
+
+  /* trunk */
+  .trunk{
+    position:absolute;
+    width:36px;
+    height:48px;
+    background:#6b3f1f;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:24px;
+    border-radius:6px;
+    box-shadow:inset 0 -6px 8px rgba(0,0,0,0.3), 0 6px 18px rgba(0,0,0,0.6);
+    z-index:6;
+    opacity:0;
+    animation: trunkAppear 0.6s 0.9s forwards ease;
+  }
+  @keyframes trunkAppear{
+    to{opacity:1; transform:translateX(-50%) translateY(0);}
+  }
+
+  /* message */
+  #msg{
+    position:fixed;
+    bottom:28px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:28px;
+    color:#aee9ff;
+    text-shadow:0 0 10px #6ae2ff;
+  }
+
+  /* subtle glow for tree stroke */
+  .strokeGlow{ filter: drop-shadow(0 0 8px rgba(0,255,102,0.15)); }
 </style>
 </head>
 <body>
+<h1>Merry Christmas 2025</h1>
 
-<canvas id="snow"></canvas>
+<div id="treeWrap" aria-hidden="true">
+  <!-- star -->
+  <svg class="star" viewBox="0 0 64 64" role="img" aria-label="star">
+    <defs>
+      <radialGradient id="g" cx="50%" cy="30%">
+        <stop offset="0%" stop-color="#fff6c8" />
+        <stop offset="45%" stop-color="#ffe97a" />
+        <stop offset="100%" stop-color="#ffcc00" />
+      </radialGradient>
+    </defs>
+    <polygon points="32,2 38,24 60,24 42,36 48,58 32,44 16,58 22,36 4,24 26,24" fill="url(#g)"/>
+  </svg>
 
-<div id="tree">
-<span class="star light">★</span>
-<br>
-<span class="leaf">      ▲ ▲</span><br>
-<span class="leaf light">     ▲ ● ▲</span><br>
-<span class="leaf">    ▲ ▲ ▲ ▲</span><br>
-<span class="leaf light">   ▲ ● ▲ ● ▲</span><br>
-<span class="leaf">  ▲ ▲ ▲ ▲ ▲ ▲</span><br>
-<span class="leaf light"> ▲ ● ▲ ● ▲ ● ▲</span><br>
-<span class="leaf">▲ ▲ ▲ ▲ ▲ ▲ ▲ ▲</span><br>
-<span style="color:#8b4513;">       ││</span><br>
-<span style="color:#8b4513;">       ││</span>
+  <!-- layers and lights will be injected by JS -->
+  <div id="layersHolder" style="position:relative; width:100%; height:100%;"></div>
+
+  <!-- trunk -->
+  <div class="trunk" id="trunkEl" aria-hidden="true"></div>
 </div>
 
 <div id="msg">Merry Christmas 2025!</div>
 
+<canvas id="snowCanvas" style="position:fixed; left:0; top:0; width:100vw; height:100vh; z-index:1;"></canvas>
+
 <script>
-// Snow effect
-const canvas = document.getElementById('snow');
-const ctx = canvas.getContext('2d');
-let w, h;
+(function(){
+  // Configuration
+  const LAYERS = 12;           // number of curved layers
+  const START_WIDTH = 340;     // width in px of top layer base
+  const WIDTH_STEP = 22;       // decrement per layer
+  const LAYER_HEIGHT = 44;     // thickness/height of curve
+  const palette = ['#e02424','#ffcc00','#00b050','#ff6b6b','#ffd1a4','#b4009e','#6fb3ff']; // christmas-ish
+  const layersHolder = document.getElementById('layersHolder');
 
-function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-}
-resize();
-window.onresize = resize;
+  // Create layers top->bottom
+  for(let i=0;i<LAYERS;i++){
+    const layer = document.createElement('div');
+    layer.className = 'layer';
+    const w = Math.max(60, START_WIDTH - i*WIDTH_STEP);
+    layer.style.width = w + 'px';
+    // vertical position: distribute downwards
+    const topPos = 24 + i * (LAYER_HEIGHT - 6); // overlap to form tree shape
+    layer.style.top = topPos + 'px';
+    layer.style.height = (LAYER_HEIGHT + 6) + 'px';
+    layer.style.left = '50%';
+    layer.style.transform = 'translateX(-50%)';
+    // create inner shape
+    const shape = document.createElement('div');
+    shape.className = 'curveShape';
+    // set border widths to create smooth arc
+    shape.style.borderLeftWidth = (w/2) + 'px';
+    shape.style.borderRightWidth = (w/2) + 'px';
+    shape.style.borderBottomWidth = LAYER_HEIGHT + 'px';
+    // slight green tint and gradient
+    shape.style.borderBottomColor = 'rgba(0,200,80,' + (0.08 + i*0.02) + ')';
+    // append shape to layer
+    layer.appendChild(shape);
+    layersHolder.appendChild(layer);
 
-let snowflakes = [];
-for (let i = 0; i < 150; i++) {
-    snowflakes.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        r: Math.random() * 3 + 1,
-        d: Math.random() + 0.5
+    // staggered appear animation: increase delay by index
+    const delay = (i * 0.12) + 0.15; // seconds
+    layer.style.animation = `appear 0.6s ${delay}s forwards ease-out`;
+
+    // place lights across the arc - calculate positions relative to layer width
+    const lightsCount = Math.max(4, Math.round(w / 60));
+    for(let j=0;j<lightsCount;j++){
+      const dot = document.createElement('div');
+      dot.className = 'light';
+      // random color from palette
+      const color = palette[Math.floor(Math.random()*palette.length)];
+      dot.style.background = color;
+      // vary animation duration a bit
+      const animDur = (0.9 + Math.random()*1.2).toFixed(2) + 's';
+      dot.style.animationDuration = animDur;
+      // stagger blinking by random delay
+      dot.style.animationDelay = (Math.random()*1.5) + 's';
+      // position along curve: compute x between left and right of layer, and y slightly above center
+      dot.style.left = (Math.random() * 86 + 7) + '%'; // percent across the shape
+      dot.style.top = (Math.random() * 20 + 12) + '%';
+      // add glow
+      dot.style.boxShadow = `0 0 10px ${color}`;
+      // make smaller bulbs varied
+      const size = (6 + Math.random()*6);
+      dot.style.width = size + 'px';
+      dot.style.height = size + 'px';
+      // add to layer (absolute positioned relative to layer)
+      layer.appendChild(dot);
+    }
+  }
+
+  // after layers created, animate small stroke glow for whole tree
+  setTimeout(()=> {
+    const all = document.querySelectorAll('.curveShape');
+    all.forEach((el, idx) => {
+      el.classList.add('strokeGlow');
+      // optional additional glow delay
+      el.style.transition = 'filter 0.6s ease ' + (idx*0.06) + 's';
     });
-}
+    // reveal trunk slightly after layers
+    document.getElementById('trunkEl').style.animationDelay = (LAYERS*0.12 + 0.1) + 's';
+  }, 60);
 
-function drawSnow() {
-    ctx.clearRect(0, 0, w, h);
-    ctx.fillStyle = "white";
-    ctx.beginPath();
-    for (let flake of snowflakes) {
-        ctx.moveTo(flake.x, flake.y);
-        ctx.arc(flake.x, flake.y, flake.r, 0, Math.PI * 2);
+  // SNOW CANVAS - lightweight particle system
+  const c = document.getElementById('snowCanvas');
+  const ctx = c.getContext('2d');
+  function resizeCanvas(){ c.width = window.innerWidth; c.height = window.innerHeight; }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  const flakes = [];
+  const FL = Math.min(280, Math.round((window.innerWidth*window.innerHeight)/9000));
+  for(let i=0;i<FL;i++){
+    flakes.push({
+      x: Math.random()*c.width,
+      y: Math.random()*c.height,
+      r: Math.random()*3 + 0.8,
+      s: Math.random()*0.9 + 0.4,
+      swing: Math.random()*2 + 1,
+      phase: Math.random()*Math.PI*2
+    });
+  }
+  function snowLoop(){
+    ctx.clearRect(0,0,c.width,c.height);
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    for(let f of flakes){
+      f.y += f.s;
+      f.x += Math.sin(f.phase) * (f.swing*0.3);
+      f.phase += 0.01 * f.swing;
+      if(f.y > c.height + 10){
+        f.y = -10;
+        f.x = Math.random()*c.width;
+      }
+      ctx.beginPath();
+      ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+      ctx.fill();
     }
-    ctx.fill();
-    updateSnow();
-}
+    requestAnimationFrame(snowLoop);
+  }
+  requestAnimationFrame(snowLoop);
 
-function updateSnow() {
-    for (let flake of snowflakes) {
-        flake.y += flake.d;
-        if (flake.y > h) {
-            flake.y = -10;
-            flake.x = Math.random() * w;
-        }
-    }
-}
-
-setInterval(drawSnow, 33);
+})();
 </script>
-
 </body>
 </html>
